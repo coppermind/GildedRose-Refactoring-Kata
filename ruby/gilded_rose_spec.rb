@@ -8,7 +8,7 @@ describe GildedRose do
 
   describe '#update_quality' do
     # Sulfuras, Hand of Ragnaros ######
-    context 'when name is `Sulfuras, Hand of Ragnaros`' do
+    context 'name is `Sulfuras, Hand of Ragnaros`' do
       let(:sell_in) { 20 }
       let(:quality) { 10 }
       let(:item) { Item.new('Sulfuras, Hand of Ragnaros', sell_in, quality) }
@@ -21,7 +21,7 @@ describe GildedRose do
     end
 
     # +5 Dexterity Vest ###############
-    context 'when name is `+5 Dexterity Vest`' do
+    context 'name is `+5 Dexterity Vest`' do
       let(:item) { Item.new('+5 Dexterity Vest', sell_in, quality) }
       context 'when sell_in > -1 and quality > 0' do
         let(:sell_in) { 10 }
@@ -34,7 +34,7 @@ describe GildedRose do
         end
       end
 
-      context 'when sell_in eql 0 and quality > 0' do
+      context 'when sell_in < 1 and quality > 0' do
         let(:sell_in) { 0 }
         let(:quality) { 10 }
         it 'decrements sell_in' do
@@ -45,7 +45,7 @@ describe GildedRose do
         end
       end
 
-      context 'when sell_in eql 0 and quality eql 0' do
+      context 'when sell_in < 1 and quality eql 0' do
         let(:sell_in) { 0 }
         let(:quality) { 0 }
         it 'decrements sell_in' do
@@ -58,7 +58,7 @@ describe GildedRose do
     end
 
     # Elixir of the Mongoose ##########
-    context 'when name is `Elixir of the Mongoose`' do
+    context 'name is `Elixir of the Mongoose`' do
       let(:item) { Item.new('Elixir of the Mongoose', sell_in, quality) }
       context 'when sell_in > -1 and quality > 0' do
         let(:sell_in) { 10 }
@@ -95,7 +95,7 @@ describe GildedRose do
     end
 
     # Aged Brie #######################
-    context 'when name is `Aged Brie`' do
+    context 'name is `Aged Brie`' do
       let(:item) { Item.new('Aged Brie', sell_in, quality) }
 
       context 'when sell_in > 0 and quality < 50' do
@@ -122,18 +122,29 @@ describe GildedRose do
 
       context 'when sell_in < 0 and quality < 50' do
         let(:sell_in) { -1 }
-        let(:quality) { 40 }
+        let(:quality) { 48 }
         it 'decrements sell_in' do
           expect(item.sell_in).to eql(sell_in - 1)
         end
-        it 'adds 2 from quality' do
+        it 'adds 2 to quality' do
           expect(item.quality).to eql(quality + 2)
+        end
+      end
+
+      context 'when sell_in < 0 and quality eql 50' do
+        let(:sell_in) { -1 }
+        let(:quality) { 50 }
+        it 'decrements sell_in' do
+          expect(item.sell_in).to eql(sell_in - 1)
+        end
+        it 'quality is unchanged' do
+          expect(item.quality).to eql(quality)
         end
       end
     end
 
     # Backstage passes to a TAFKAL80ETC concert
-    context 'when name is `Backstage passes to a TAFKAL80ETC concert`' do
+    context 'name is `Backstage passes to a TAFKAL80ETC concert`' do
       let(:item) { Item.new("Backstage passes to a TAFKAL80ETC concert", sell_in, quality) }
       context 'when sell_in > 10' do
         let(:sell_in) { 15 }
