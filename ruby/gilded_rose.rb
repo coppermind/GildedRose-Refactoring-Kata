@@ -1,44 +1,22 @@
 class GildedRose
-
-  # Rule names are completely arbitrary for now while I think of a better naming convention
-  # NB: `sell_in` attribute conditions are checked after decrement of `sell_in` value
-  RULES = {
-    decreasing_quality_floor_zero: {
-      'item.sell_in > -1 && item.quality > 0': { attrib: :quality, amount: -1, operation: :add },
-      'item.sell_in < 1 && item.quality > 0': { attrib: :quality, amount: -2, operation: :add },
-      'item.sell_in < 1 && item.quality == 0': { attrib: :quality, amount: 0, operation: :set }
-    },
-    increasing_quality_ceiling_fifty: {
-      'item.sell_in < 0 && item.quality >= 50': { attrib: :quality, amount: 50, operation: :set },
-      'item.sell_in < 0 && item.quality == 49': { attrib: :quality, amount: 1, operation: :add },
-      'item.sell_in < 0 && item.quality <= 48': { attrib: :quality, amount: 2, operation: :add },
-      'item.sell_in > -1 && item.quality < 50': { attrib: :quality, amount: 1, operation: :add }
-    },
-    increasing_quality_floor_zero: {
-      'item.sell_in < 11 && item.sell_in > -1 && item.quality > 48': { attrib: :quality, amount: 50, operation: :set },
-      'item.sell_in < 0': { attrib: :quality, amount: 0, operation: :set },
-      'item.sell_in < 5': { attrib: :quality, amount: 3, operation: :add },
-      'item.sell_in > 9': { attrib: :quality, amount: 1, operation: :add },
-      'item.sell_in < 11 && item.sell_in > 4': { attrib: :quality, amount: 2, operation: :add },
-    },
-    ignore: nil
-  }
-
   def initialize(items)
-    @items = items
+    @items = []
+    items.each do |item|
+      @items << IdentifyItem.(item)
+    end
   end
 
   def update(item)
-    return if item.rule.nil?
+    return if item.class::RULES.empty?
 
-    item.send(:add_sell_in, -1)
-    item.rule.each do |rule, config|
+    item.send(:age_item)
+    item.class::RULES.each do |rule, config|
       if eval(rule.to_s)
         method_name = case config[:operation]
         when :add
-          "add_#{config[:attrib]}"
+          "add_quality"
         when :set
-          "#{config[:attrib]}="
+          "quality="
         end
         item.send(method_name, config[:amount])
         return
@@ -54,24 +32,88 @@ class GildedRose
 end
 
 class Item
-  attr_accessor :name, :sell_in, :quality, :rule
+  attr_accessor :name, :sell_in, :quality
 
-  def initialize(name, sell_in, quality, rule)
+  def initialize(name, sell_in, quality)
     @name = name
     @sell_in = sell_in
     @quality = quality
-    @rule = rule
   end
 
   def to_s
     "#{@name}, #{@sell_in}, #{@quality}"
   end
+end
 
-  def add_sell_in(amount)
-    @sell_in += amount
+class IdentifyItem
+  def self.call(item)
+    case item.name
+    when '+5 Dexterity Vest', 'Elixir of the Mongoose', 'Conjured Mana Cake'
+      ConjuredItem.new(item)
+    when 'Aged Brie'
+      SoftCheeseItem.new(item)
+    when 'Backstage passes to a TAFKAL80ETC concert'
+      BackstagePassItem.new(item)
+    when 'Sulfuras, Hand of Ragnaros'
+      SulfurasWeaponItem.new(item)
+    end
+  end
+end
+
+class CommonAttributes
+
+  def initialize(item)
+    @item = item
+  end
+
+  def age_item
+    @item.sell_in -= 1
   end
 
   def add_quality(amount)
-    @quality += amount
+    @item.quality += amount
   end
+
+  def sell_in
+    @item.sell_in
+  end
+
+  def quality
+    @item.quality
+  end
+
+  def quality=(amount)
+    @item.quality = amount
+  end
+end
+
+class ConjuredItem < CommonAttributes
+  RULES = {
+    'item.sell_in > -1 && item.quality > 0': { amount: -1, operation: :add },
+    'item.sell_in < 1 && item.quality > 0': { amount: -2, operation: :add },
+    'item.sell_in < 1 && item.quality == 0': { amount: 0, operation: :set }
+  }.freeze
+end
+
+class SoftCheeseItem < CommonAttributes
+  RULES = {
+    'item.sell_in < 0 && item.quality >= 50': { amount: 50, operation: :set },
+    'item.sell_in < 0 && item.quality == 49': { amount: 1, operation: :add },
+    'item.sell_in < 0 && item.quality <= 48': { amount: 2, operation: :add },
+    'item.sell_in > -1 && item.quality < 50': { amount: 1, operation: :add }
+  }.freeze
+end
+
+class BackstagePassItem < CommonAttributes
+  RULES = {
+    'item.sell_in < 11 && item.sell_in > -1 && item.quality > 48': { amount: 50, operation: :set },
+    'item.sell_in < 0': { amount: 0, operation: :set },
+    'item.sell_in < 5': { amount: 3, operation: :add },
+    'item.sell_in > 9': { amount: 1, operation: :add },
+    'item.sell_in < 11 && item.sell_in > 4': { amount: 2, operation: :add }
+  }.freeze
+end
+
+class SulfurasWeaponItem < CommonAttributes
+  RULES = { }.freeze
 end
