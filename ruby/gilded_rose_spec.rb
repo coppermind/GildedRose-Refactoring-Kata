@@ -113,8 +113,8 @@ describe GildedRose do
     # BackstagePassItem ###############
     context 'BackstagePassItem' do
       let(:item) { Item.new("Backstage passes to a TAFKAL80ETC concert", sell_in, quality) }
-      context 'when sell_in > 10' do
-        let(:sell_in) { 11 }
+      context 'when sell_in > 11' do
+        let(:sell_in) { 12 }
         let(:quality) { 20 }
         it 'decrements sell_in' do
           expect(item.sell_in).to eql(sell_in - 1)
