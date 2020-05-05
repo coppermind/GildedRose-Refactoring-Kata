@@ -20,82 +20,47 @@ describe GildedRose do
       end
     end
 
-    # +5 Dexterity Vest ###############
-    context 'name is `+5 Dexterity Vest`' do
-      let(:item) { Item.new('+5 Dexterity Vest', sell_in, quality) }
-      context 'when sell_in > -1 and quality > 0' do
-        let(:sell_in) { 10 }
-        let(:quality) { 20 }
-        it 'decrements sell_in' do
-          expect(item.sell_in).to eql(sell_in - 1)
+    # Conjured Items ##################
+    context 'ConjuredItem' do
+      [ '+5 Dexterity Vest', 'Elixir of the Mongoose', 'Conjured Mana Cake' ].each do |name|
+        let(:item) { Item.new(name, sell_in, quality) }
+        context 'when sell_in > 0 and quality > 0' do
+          let(:sell_in) { 10 }
+          let(:quality) { 20 }
+          it 'decrements sell_in' do
+            expect(item.sell_in).to eql(sell_in - 1)
+          end
+          it 'decrements quality' do
+            expect(item.quality).to eql(quality - 1)
+          end
         end
-        it 'decrements quality' do
-          expect(item.quality).to eql(quality - 1)
-        end
-      end
 
-      context 'when sell_in < 1 and quality > 0' do
-        let(:sell_in) { 0 }
-        let(:quality) { 10 }
-        it 'decrements sell_in' do
-          expect(item.sell_in).to eql(sell_in - 1)
+        context 'when sell_in < 1 and quality > 0' do
+          let(:sell_in) { 0 }
+          let(:quality) { 10 }
+          it 'decrements sell_in' do
+            expect(item.sell_in).to eql(sell_in - 1)
+          end
+          it 'substracts 2 from quality' do
+            expect(item.quality).to eql(quality - 2)
+          end
         end
-        it 'substracts 2 from quality' do
-          expect(item.quality).to eql(quality - 2)
-        end
-      end
 
-      context 'when sell_in < 1 and quality eql 0' do
-        let(:sell_in) { 0 }
-        let(:quality) { 0 }
-        it 'decrements sell_in' do
-          expect(item.sell_in).to eql(sell_in - 1)
-        end
-        it 'doest not change quality' do
-          expect(item.quality).to eql(quality)
-        end
-      end
-    end
-
-    # Elixir of the Mongoose ##########
-    context 'name is `Elixir of the Mongoose`' do
-      let(:item) { Item.new('Elixir of the Mongoose', sell_in, quality) }
-      context 'when sell_in > -1 and quality > 0' do
-        let(:sell_in) { 10 }
-        let(:quality) { 20 }
-        it 'decrements sell_in' do
-          expect(item.sell_in).to eql(sell_in - 1)
-        end
-        it 'decrements quality' do
-          expect(item.quality).to eql(quality - 1)
-        end
-      end
-
-      context 'when sell_in eql 0 and quality > 0' do
-        let(:sell_in) { 0 }
-        let(:quality) { 10 }
-        it 'decrements sell_in' do
-          expect(item.sell_in).to eql(sell_in - 1)
-        end
-        it 'substracts 2 from quality' do
-          expect(item.quality).to eql(quality - 2)
-        end
-      end
-
-      context 'when sell_in eql 0 and quality eql 0' do
-        let(:sell_in) { 0 }
-        let(:quality) { 0 }
-        it 'decrements sell_in' do
-          expect(item.sell_in).to eql(sell_in - 1)
-        end
-        it 'doest not change quality' do
-          expect(item.quality).to eql(quality)
+        context 'when sell_in < 1 and quality eql 0' do
+          let(:sell_in) { -2 }
+          let(:quality) { 0 }
+          it 'decrements sell_in' do
+            expect(item.sell_in).to eql(sell_in - 1)
+          end
+          it 'doest not change quality' do
+            expect(item.quality).to eql(0)
+          end
         end
       end
     end
 
     # Aged Brie #######################
-    context 'name is `Aged Brie`' do
+    context 'SoftCheeseItem' do
       let(:item) { Item.new('Aged Brie', sell_in, quality) }
 
       context 'when sell_in > 0 and quality < 50' do
