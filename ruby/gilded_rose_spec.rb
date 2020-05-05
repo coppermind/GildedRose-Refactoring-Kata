@@ -11,7 +11,7 @@ describe GildedRose do
     context 'name is `Sulfuras, Hand of Ragnaros`' do
       let(:sell_in) { 20 }
       let(:quality) { 10 }
-      let(:item) { Item.new('Sulfuras, Hand of Ragnaros', sell_in, quality) }
+      let(:item) { Item.new('Sulfuras, Hand of Ragnaros', sell_in, quality, GildedRose::RULES[:ignore]) }
       it 'does not change sell_in' do
         expect(item.sell_in).to eql(sell_in)
       end
@@ -22,7 +22,7 @@ describe GildedRose do
 
     # +5 Dexterity Vest ###############
     context 'name is `+5 Dexterity Vest`' do
-      let(:item) { Item.new('+5 Dexterity Vest', sell_in, quality) }
+      let(:item) { Item.new('+5 Dexterity Vest', sell_in, quality, GildedRose::RULES[:decreasing_quality_floor_zero]) }
       context 'when sell_in > -1 and quality > 0' do
         let(:sell_in) { 10 }
         let(:quality) { 20 }
@@ -59,7 +59,7 @@ describe GildedRose do
 
     # Elixir of the Mongoose ##########
     context 'name is `Elixir of the Mongoose`' do
-      let(:item) { Item.new('Elixir of the Mongoose', sell_in, quality) }
+      let(:item) { Item.new('Elixir of the Mongoose', sell_in, quality, GildedRose::RULES[:decreasing_quality_floor_zero]) }
       context 'when sell_in > -1 and quality > 0' do
         let(:sell_in) { 10 }
         let(:quality) { 20 }
@@ -96,7 +96,7 @@ describe GildedRose do
 
     # Aged Brie #######################
     context 'name is `Aged Brie`' do
-      let(:item) { Item.new('Aged Brie', sell_in, quality) }
+      let(:item) { Item.new('Aged Brie', sell_in, quality, GildedRose::RULES[:increasing_quality_ceiling_fifty]) }
 
       context 'when sell_in > 0 and quality < 50' do
         let(:sell_in) { 1 }
@@ -167,7 +167,7 @@ describe GildedRose do
 
     # Backstage passes to a TAFKAL80ETC concert
     context 'name is `Backstage passes to a TAFKAL80ETC concert`' do
-      let(:item) { Item.new("Backstage passes to a TAFKAL80ETC concert", sell_in, quality) }
+      let(:item) { Item.new("Backstage passes to a TAFKAL80ETC concert", sell_in, quality, GildedRose::RULES[:increasing_quality_floor_zero]) }
       context 'when sell_in > 10' do
         let(:sell_in) { 11 }
         let(:quality) { 20 }
