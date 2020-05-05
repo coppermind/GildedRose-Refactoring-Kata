@@ -62,7 +62,7 @@ describe GildedRose do
     end
 
     # Aged Brie #######################
-    context 'SoftCheeseItem' do
+    context 'AgedBrieItem' do
       let(:item) { Item.new('Aged Brie', sell_in, quality) }
 
       context 'when sell_in > 0' do

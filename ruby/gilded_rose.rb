@@ -51,7 +51,7 @@ class IdentifyItem
     when '+5 Dexterity Vest', 'Elixir of the Mongoose', 'Conjured Mana Cake'
       ConjuredItem.new(item)
     when 'Aged Brie'
-      SoftCheeseItem.new(item)
+      AgedBrieItem.new(item)
     when 'Backstage passes to a TAFKAL80ETC concert'
       BackstagePassItem.new(item)
     when 'Sulfuras, Hand of Ragnaros'
@@ -98,7 +98,7 @@ class ConjuredItem < CommonAttributes
   }.freeze
 end
 
-class SoftCheeseItem < CommonAttributes
+class AgedBrieItem < CommonAttributes
   RULES = {
     'item.sell_in < 0': { amount: 2, operation: :add },
     'item.sell_in >= 0': { amount: 1, operation: :add }
