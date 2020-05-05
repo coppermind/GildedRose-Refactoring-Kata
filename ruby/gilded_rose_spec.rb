@@ -110,8 +110,8 @@ describe GildedRose do
       end
     end
 
-    # Backstage passes to a TAFKAL80ETC concert
-    context 'name is `Backstage passes to a TAFKAL80ETC concert`' do
+    # BackstagePassItem ###############
+    context 'BackstagePassItem' do
       let(:item) { Item.new("Backstage passes to a TAFKAL80ETC concert", sell_in, quality) }
       context 'when sell_in > 10' do
         let(:sell_in) { 11 }
@@ -135,40 +135,7 @@ describe GildedRose do
         end
       end
 
-      context 'when sell_in < 11 and quality > 48' do
-        let(:sell_in) { 10 }
-        let(:quality) { 49 }
-        it 'decrements sell_in' do
-          expect(item.sell_in).to eql(sell_in - 1)
-        end
-        it 'sets quality to 50' do
-          expect(item.quality).to eql(50)
-        end
-      end
-
-      context 'when sell_in > 0 and quality > 48' do
-        let(:sell_in) { 1 }
-        let(:quality) { 49 }
-        it 'decrements sell_in' do
-          expect(item.sell_in).to eql(sell_in - 1)
-        end
-        it 'sets quality to 50' do
-          expect(item.quality).to eql(50)
-        end
-      end
-
-      context 'when sell_in < 7' do
-        let(:sell_in) { 6 }
-        let(:quality) { 20 }
-        it 'decrements sell_in' do
-          expect(item.sell_in).to eql(sell_in - 1)
-        end
-        it 'adds 2 to quality' do
-          expect(item.quality).to eql(quality + 2)
-        end
-      end
-
-      context 'when sell_in > 4' do
+      context 'when sell_in < 6' do
         let(:sell_in) { 5 }
         let(:quality) { 20 }
         it 'decrements sell_in' do
@@ -179,14 +146,25 @@ describe GildedRose do
         end
       end
 
-      context 'when sell_in < 5 and sell_in > -1' do
-        let(:sell_in) { 1 }
-        let(:quality) { 20 }
+      context 'when sell_in < 11 and quality is 49' do
+        let(:sell_in) { 10 }
+        let(:quality) { 49 }
         it 'decrements sell_in' do
           expect(item.sell_in).to eql(sell_in - 1)
         end
-        it 'adds 3 to quality' do
-          expect(item.quality).to eql(quality + 3)
+        it 'sets quality to max' do
+          expect(item.quality).to eql(max_quality)
+        end
+      end
+
+      context 'when sell_in < 3 and quality > 48' do
+        let(:sell_in) { 1 }
+        let(:quality) { 49 }
+        it 'decrements sell_in' do
+          expect(item.sell_in).to eql(sell_in - 1)
+        end
+        it 'sets quality to max' do
+          expect(item.quality).to eql(max_quality)
         end
       end
 
@@ -197,7 +175,7 @@ describe GildedRose do
           expect(item.sell_in).to eql(sell_in - 1)
         end
         it 'set quality to 0' do
-          expect(item.quality).to eql(0)
+          expect(item.quality).to eql(min_quality)
         end
       end
     end
