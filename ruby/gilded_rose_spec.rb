@@ -65,7 +65,7 @@ describe GildedRose do
     context 'SoftCheeseItem' do
       let(:item) { Item.new('Aged Brie', sell_in, quality) }
 
-      context 'when sell_in > 0 and quality < 50' do
+      context 'when sell_in > 0' do
         let(:sell_in) { 1 }
         let(:quality) { 40 }
         it 'decrements sell_in' do
@@ -76,7 +76,7 @@ describe GildedRose do
         end
       end
 
-      context 'when sell_in > -1 and quality < 50' do
+      context 'when sell_in < 1' do
         let(:sell_in) { 0 }
         let(:quality) { 40 }
         it 'decrements sell_in' do
@@ -87,47 +87,25 @@ describe GildedRose do
         end
       end
 
-      context 'when sell_in > 0 and quality < 50' do
-        let(:sell_in) { 2 }
-        let(:quality) { 40 }
-        it 'decrements sell_in' do
-          expect(item.sell_in).to eql(sell_in - 1)
-        end
-        it 'increments quality' do
-          expect(item.quality).to eql(quality + 1)
-        end
-      end
-
-      context 'when sell_in < 0 and quality eql 49' do
+      context 'when sell_in < 1 and quality is 49' do
         let(:sell_in) { -1 }
         let(:quality) { 49 }
         it 'decrements sell_in' do
           expect(item.sell_in).to eql(sell_in - 1)
         end
         it 'increments quality' do
-          expect(item.quality).to eql(quality + 1)
+          expect(item.quality).to eql(max_quality)
         end
       end
 
-      context 'when sell_in < 0 and quality <= 48' do
-        let(:sell_in) { -1 }
-        let(:quality) { 48 }
-        it 'decrements sell_in' do
-          expect(item.sell_in).to eql(sell_in - 1)
-        end
-        it 'adds 2 to quality' do
-          expect(item.quality).to eql(quality + 2)
-        end
-      end
-
-      context 'when sell_in < 0 and quality eql 50' do
+      context 'when sell_in < 0 and quality is 50' do
         let(:sell_in) { -1 }
         let(:quality) { 50 }
         it 'decrements sell_in' do
           expect(item.sell_in).to eql(sell_in - 1)
         end
         it 'quality is unchanged' do
-          expect(item.quality).to eql(quality)
+          expect(item.quality).to eql(max_quality)
         end
       end
     end
