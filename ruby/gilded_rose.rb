@@ -61,6 +61,8 @@ class IdentifyItem
 end
 
 class CommonAttributes
+  MIN_QUALITY = 0
+  MAX_QUALITY = 50
 
   def initialize(item)
     @item = item
@@ -72,6 +74,8 @@ class CommonAttributes
 
   def add_quality(amount)
     @item.quality += amount
+    @item.quality = MAX_QUALITY if @item.quality > MAX_QUALITY
+    @item.quality = MIN_QUALITY if @item.quality < MIN_QUALITY
   end
 
   def sell_in
@@ -89,24 +93,20 @@ end
 
 class ConjuredItem < CommonAttributes
   RULES = {
-    'item.sell_in > -1 && item.quality > 0': { amount: -1, operation: :add },
-    'item.sell_in < 1 && item.quality > 0': { amount: -2, operation: :add },
-    'item.sell_in < 1 && item.quality == 0': { amount: 0, operation: :set }
+    'item.sell_in >= 0': { amount: -1, operation: :add },
+    'item.sell_in < 0': { amount: -2, operation: :add },
   }.freeze
 end
 
 class SoftCheeseItem < CommonAttributes
   RULES = {
-    'item.sell_in < 0 && item.quality >= 50': { amount: 50, operation: :set },
-    'item.sell_in < 0 && item.quality == 49': { amount: 1, operation: :add },
-    'item.sell_in < 0 && item.quality <= 48': { amount: 2, operation: :add },
-    'item.sell_in > -1 && item.quality < 50': { amount: 1, operation: :add }
+    'item.sell_in < 0': { amount: 2, operation: :add },
+    'item.sell_in >= 0': { amount: 1, operation: :add }
   }.freeze
 end
 
 class BackstagePassItem < CommonAttributes
   RULES = {
-    'item.sell_in < 11 && item.sell_in > -1 && item.quality > 48': { amount: 50, operation: :set },
     'item.sell_in < 0': { amount: 0, operation: :set },
     'item.sell_in < 5': { amount: 3, operation: :add },
     'item.sell_in > 9': { amount: 1, operation: :add },
