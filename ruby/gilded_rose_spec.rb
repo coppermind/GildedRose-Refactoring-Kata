@@ -4,7 +4,7 @@ describe GildedRose do
   let(:items) { [item] }
   let(:gilded_rose) { GildedRose.new(items) }
 
-  before { gilded_rose.update_quality }
+  before { gilded_rose.update_qualities }
 
   describe '#update_quality' do
     # Sulfuras, Hand of Ragnaros ######
@@ -99,6 +99,28 @@ describe GildedRose do
       let(:item) { Item.new('Aged Brie', sell_in, quality) }
 
       context 'when sell_in > 0 and quality < 50' do
+        let(:sell_in) { 1 }
+        let(:quality) { 40 }
+        it 'decrements sell_in' do
+          expect(item.sell_in).to eql(sell_in - 1)
+        end
+        it 'increments quality' do
+          expect(item.quality).to eql(quality + 1)
+        end
+      end
+
+      context 'when sell_in > -1 and quality < 50' do
+        let(:sell_in) { 0 }
+        let(:quality) { 40 }
+        it 'decrements sell_in' do
+          expect(item.sell_in).to eql(sell_in - 1)
+        end
+        it 'increments quality' do
+          expect(item.quality).to eql(quality + 2)
+        end
+      end
+
+      context 'when sell_in > 0 and quality < 50' do
         let(:sell_in) { 2 }
         let(:quality) { 40 }
         it 'decrements sell_in' do
@@ -120,7 +142,7 @@ describe GildedRose do
         end
       end
 
-      context 'when sell_in < 0 and quality < 50' do
+      context 'when sell_in < 0 and quality <= 48' do
         let(:sell_in) { -1 }
         let(:quality) { 48 }
         it 'decrements sell_in' do
@@ -147,7 +169,7 @@ describe GildedRose do
     context 'name is `Backstage passes to a TAFKAL80ETC concert`' do
       let(:item) { Item.new("Backstage passes to a TAFKAL80ETC concert", sell_in, quality) }
       context 'when sell_in > 10' do
-        let(:sell_in) { 15 }
+        let(:sell_in) { 11 }
         let(:quality) { 20 }
         it 'decrements sell_in' do
           expect(item.sell_in).to eql(sell_in - 1)
@@ -168,7 +190,40 @@ describe GildedRose do
         end
       end
 
-      context 'when sell_in < 6' do
+      context 'when sell_in < 11 and quality > 48' do
+        let(:sell_in) { 10 }
+        let(:quality) { 49 }
+        it 'decrements sell_in' do
+          expect(item.sell_in).to eql(sell_in - 1)
+        end
+        it 'sets quality to 50' do
+          expect(item.quality).to eql(50)
+        end
+      end
+
+      context 'when sell_in > 0 and quality > 48' do
+        let(:sell_in) { 1 }
+        let(:quality) { 49 }
+        it 'decrements sell_in' do
+          expect(item.sell_in).to eql(sell_in - 1)
+        end
+        it 'sets quality to 50' do
+          expect(item.quality).to eql(50)
+        end
+      end
+
+      context 'when sell_in < 7' do
+        let(:sell_in) { 6 }
+        let(:quality) { 20 }
+        it 'decrements sell_in' do
+          expect(item.sell_in).to eql(sell_in - 1)
+        end
+        it 'adds 2 to quality' do
+          expect(item.quality).to eql(quality + 2)
+        end
+      end
+
+      context 'when sell_in > 4' do
         let(:sell_in) { 5 }
         let(:quality) { 20 }
         it 'decrements sell_in' do
@@ -179,8 +234,19 @@ describe GildedRose do
         end
       end
 
-      context 'when sell_in < 1' do
-        let(:sell_in) { 0 }
+      context 'when sell_in < 5 and sell_in > -1' do
+        let(:sell_in) { 1 }
+        let(:quality) { 20 }
+        it 'decrements sell_in' do
+          expect(item.sell_in).to eql(sell_in - 1)
+        end
+        it 'adds 3 to quality' do
+          expect(item.quality).to eql(quality + 3)
+        end
+      end
+
+      context 'when sell_in < 0' do
+        let(:sell_in) { -1 }
         let(:quality) { 20 }
         it 'decrements sell_in' do
           expect(item.sell_in).to eql(sell_in - 1)

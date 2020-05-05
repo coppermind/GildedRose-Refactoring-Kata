@@ -4,35 +4,39 @@ class GildedRose
     @items = items
   end
 
-  def update_quality
-    @items.each do |item|
-      next if item.name == 'Sulfuras, Hand of Ragnaros'
+  def update(item)
+    return if item.name == 'Sulfuras, Hand of Ragnaros'
 
-      if item.name == 'Aged Brie' || item.name == 'Backstage passes to a TAFKAL80ETC concert'
-        if item.quality < 50
-          item.quality = item.quality + 1
-          if item.name == 'Backstage passes to a TAFKAL80ETC concert'
-            item.quality = item.quality + 1 if item.sell_in < 11 && item.quality < 50
-            item.quality = item.quality + 1 if item.sell_in < 6 && item.quality < 50
-          end
+    if item.name == 'Aged Brie' || item.name == 'Backstage passes to a TAFKAL80ETC concert'
+      if item.quality < 50
+        item.quality = item.quality + 1
+        if item.name == 'Backstage passes to a TAFKAL80ETC concert'
+          item.quality = item.quality + 1 if item.sell_in < 11 && item.quality < 50
+          item.quality = item.quality + 1 if item.sell_in < 6 && item.quality < 50
         end
+      end
+    else
+      item.quality = item.quality - 1 if item.quality > 0
+    end
+
+    item.sell_in = item.sell_in - 1
+
+    if item.sell_in < 0
+      if item.name == 'Aged Brie'
+        item.quality = item.quality + 1 if item.quality < 50
       else
-        item.quality = item.quality - 1 if item.quality > 0
-      end
-
-      item.sell_in = item.sell_in - 1
-
-      if item.sell_in < 0
-        if item.name == 'Aged Brie'
-          item.quality = item.quality + 1 if item.quality < 50
+        if item.name == 'Backstage passes to a TAFKAL80ETC concert'
+          item.quality = item.quality - item.quality
         else
-          if item.name == 'Backstage passes to a TAFKAL80ETC concert'
-            item.quality = item.quality - item.quality
-          else
-            item.quality = item.quality - 1 if item.quality > 0
-          end
+          item.quality = item.quality - 1 if item.quality > 0
         end
       end
+    end
+  end
+
+  def update_qualities
+    @items.each do |item|
+      update(item)
     end
   end
 end
