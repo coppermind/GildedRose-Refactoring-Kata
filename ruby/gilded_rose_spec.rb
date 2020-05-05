@@ -1,6 +1,8 @@
 require File.join(File.dirname(__FILE__), 'gilded_rose')
 
 describe GildedRose do
+  let(:min_quality) { 0 }
+  let(:max_quality) { 50 }
   let(:items) { [item] }
   let(:gilded_rose) { GildedRose.new(items) }
 
@@ -46,14 +48,14 @@ describe GildedRose do
           end
         end
 
-        context 'when sell_in < 1 and quality eql 0' do
+        context 'when sell_in < 1 and quality is 0' do
           let(:sell_in) { -2 }
           let(:quality) { 0 }
           it 'decrements sell_in' do
             expect(item.sell_in).to eql(sell_in - 1)
           end
           it 'doest not change quality' do
-            expect(item.quality).to eql(0)
+            expect(item.quality).to eql(min_quality)
           end
         end
       end
